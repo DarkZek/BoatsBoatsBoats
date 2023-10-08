@@ -20,19 +20,19 @@ class ProductController {
     }
 
     async getDataOrder(user) {
-        return await this.collection.find({userId: user}).toArray()
+        return await this.collection.find({userId: {$in:[user]}}).toArray()
     }
 
     async getDataCode(user) {
-        return await this.collection.findOne({code: user})
+        return await this.collection.findOne({code: {$in:[user]}})
     }
 
     async getDataUser(user) {
-        return await this.collection.findOne({username: user})
+        return await this.collection.findOne({username: {$in:[user]}})
     }
 
     async getDataToken(token) {
-        return await this.collection.findOne({refreshToken: token})
+        return await this.collection.findOne({refreshToken: {$in:[token]}})
     }
 
     async getAllData() {
