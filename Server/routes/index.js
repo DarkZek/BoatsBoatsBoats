@@ -9,7 +9,7 @@ const ROLES_LIST = require('../config/rolesList');
 const verifyRoles = require('../middleware/verifyRoles');
 const retrieveUserInfo = require('../middleware/retrieveUserInfo');
 
-router.post('/product/insert', async function (req, res, next) {
+router.post('/product/insert', verifyJWT, verifyRoles(ROLES_LIST.Admin), async function (req, res, next) {
   const controller = new ProductController(res.locals.dburi, 'products');
   const id = await controller.insertData(req.body)
   res.json(id).status(200);
@@ -33,7 +33,7 @@ router.get('/product/:id', verifyJWT, verifyRoles(ROLES_LIST.Admin, ROLES_LIST.U
 
 });
 
-router.delete('/product/:id', async function (req, res, next) {
+router.delete('/product/:id', verifyJWT, verifyRoles(ROLES_LIST.Admin), async function (req, res, next) {
   const controller = new ProductController(res.locals.dburi, 'products');
   const success = await controller.deleteData(req.params.id);
   if (success) {
@@ -44,20 +44,20 @@ router.delete('/product/:id', async function (req, res, next) {
 });
 
 
-router.post('/orders/insert', retrieveUserInfo, async function (req, res, next) {
+router.post('/orders/insert', verifyJWT, verifyRoles(ROLES_LIST.Admin, ROLES_LIST.User), retrieveUserInfo, async function (req, res, next) {
   const controller = new ProductController(res.locals.dburi, 'orders');
   req.body.userId = res.locals.userData.id;
   const id = await controller.insertData({ ...req.body, time: new Date() });
   res.json(id).status(200);
 });
 
-router.put('/orders/:id', async function (req, res, next) {
+router.put('/orders/:id', verifyJWT, verifyRoles(ROLES_LIST.Admin, ROLES_LIST.User), async function (req, res, next) {
   const controller = new ProductController(res.locals.dburi, 'orders');
   await controller.replaceData(req.params.id, req.body)
   res.json({ message: 'success' }).status(200);
 });
 
-router.get('/orders/:id', async function (req, res, next) {
+router.get('/orders/:id', verifyJWT, verifyRoles(ROLES_LIST.Admin, ROLES_LIST.User), async function (req, res, next) {
   const controller = new ProductController(res.locals.dburi, 'orders');
   const data = await controller.getData(req.params.id);
   if (data != null) {
@@ -67,7 +67,7 @@ router.get('/orders/:id', async function (req, res, next) {
   }
 });
 
-router.delete('/orders/:id', async function (req, res, next) {
+router.delete('/orders/:id', verifyJWT, verifyRoles(ROLES_LIST.Admin), async function (req, res, next) {
   const controller = new ProductController(res.locals.dburi, 'orders');
   const success = await controller.deleteData(req.params.id);
   if (success) {

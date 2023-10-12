@@ -67,7 +67,7 @@ router.get('/reset/:code', async function(req, res) {
     res.render("passwordResetCode", { layout: 'basic', code: req.params.code });
 });
 
-router.get('/products/:productId/edit', retrieveUserInfo, async function(req, res) {
+router.get('/products/:productId/edit', verifyJWT, verifyRoles(ROLES_LIST.Admin), retrieveUserInfo, async function(req, res) {
     // Disable caching
     res.set('Cache-Control', 'no-store');
 
@@ -76,7 +76,7 @@ router.get('/products/:productId/edit', retrieveUserInfo, async function(req, re
     res.render("product_edit", { product, user: res.locals.userData });
 });
 
-router.get('/products/new', retrieveUserInfo, async function(req, res) {
+router.get('/products/new', verifyJWT, verifyRoles(ROLES_LIST.Admin), retrieveUserInfo, async function(req, res) {
     res.render("product_edit", { creation: true, user: res.locals.userData, product: { name: "New Product", imgUrl: "/assets/boats/Add.png", description: "Fill out description", price: 14.99 } });
 });
 
@@ -84,7 +84,7 @@ router.get('/privacy', retrieveUserInfo, async function(req, res) {
     res.render("privacy", { user: res.locals.userData });
 });
 
-router.get('/cart', retrieveUserInfo, async function(req, res) {
+router.get('/cart', verifyJWT, verifyRoles(ROLES_LIST.Admin, ROLES_LIST.User), retrieveUserInfo, async function(req, res) {
     let cart = {};
     let cartSize = undefined;
 
@@ -121,7 +121,7 @@ router.get('/cart', retrieveUserInfo, async function(req, res) {
 });
 
 
-router.get('/order/:orderId', retrieveUserInfo, async function(req, res) {
+router.get('/order/:orderId', verifyJWT, verifyRoles(ROLES_LIST.Admin, ROLES_LIST.User),retrieveUserInfo, async function(req, res) {
     let cart = {};
     let cartSize = undefined;
 
@@ -144,7 +144,7 @@ router.get('/order/:orderId', retrieveUserInfo, async function(req, res) {
 });
 
 
-router.get('/order', retrieveUserInfo, async function(req, res) {
+router.get('/order', verifyJWT, verifyRoles(ROLES_LIST.Admin, ROLES_LIST.User), retrieveUserInfo, async function(req, res) {
 
     if (!res.locals.userData) {
         res.redirect(303, '/');
