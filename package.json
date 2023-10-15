@@ -4,7 +4,11 @@
   "private": true,
   "scripts": {
     "start": "node ./Server/bin/www",
-    "dev": "nodemon ./Server/bin/www"
+    "dev": "nodemon ./Server/bin/www",
+    "start-recommendation-service": "node ./RecommendationService/bin/www",
+    "dev-recommendation-service": "nodemon ./RecommendationService/bin/www",
+    "start-oauth-service": "node ./OAuthService/bin/www",
+    "dev-oauth-service": "nodemon ./OAuthService/bin/www"
   },
   "dependencies": {
     "axios": "^1.5.0",
