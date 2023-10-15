@@ -66,6 +66,17 @@ class ProductController {
     async deleteToken(username) {
         await this.collection.updateOne({ username }, { $set: { refreshToken: '' } });
     }
+
+    async getProductIdByName(productName) {
+        const query = { name: productName };
+        const result = await this.collection.findOne(query);
+
+        if (result) {
+            return result._id.toString(); 
+        } else {
+            return null; 
+        }
+    }
 }
 
 module.exports = ProductController;
