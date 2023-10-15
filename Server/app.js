@@ -12,6 +12,7 @@ const passport = require('passport'); // Passport for OAuth2
 var viewRouter = require('./routes/view');
 var indexRouter = require('./routes/index');
 var recommendationRouter = require('./routes/recommendation');
+var oAuthRouter = require('./routes/oAuth');
 
 var app = express();
 
@@ -89,6 +90,7 @@ app.set("views", path.resolve("./Server/views"));
 
 app.use('/', viewRouter);
 app.use('/', recommendationRouter);
+app.use('/', oAuthRouter);
 app.use('/', indexRouter);
 
 // catch 404 and forward to error handler

@@ -102,7 +102,7 @@ router.put('/admin',verifyJWT, verifyRoles(ROLES_LIST.Admin), adminController.ma
 /**********************************************
  *                   OAuth                    *
  **********************************************/
-const googleRegisterController = require('../controllers/googleRegister');
+/**const googleRegisterController = require('../controllers/googleRegister');
 const passport = require('passport');
 require('../controllers/googleAPI');
 
@@ -124,6 +124,6 @@ router.get('/auth/google/success', async(req, res) => {
 router.get('/auth/google/failure', (req, res) => {
   var message = 'Authentication failed.'
   res.redirect(`/login?message=${message}`);
-});
+});*/
 
 module.exports = router;
