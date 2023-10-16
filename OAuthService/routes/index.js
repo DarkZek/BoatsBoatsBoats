@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-const { sendRequest } = require('../../Server/composables/sendRequest');
+const { sendRequest } = require('../composables/sendRequest');
 const fs = require('fs');
 const googleRegisterController = require('../controllers/googleRegister');
 const passport = require('passport');

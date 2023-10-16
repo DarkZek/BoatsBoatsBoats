@@ -2,7 +2,7 @@ var express = require('express');
 var router = express.Router();
 var geoip = require('geoip-lite');
 const ipaddrJs = require('ipaddr.js');
-const { sendRequest } = require('../../Server/composables/sendRequest');
+const { sendRequest } = require('../composables/sendRequest');
 const fs = require('fs');
 
 // Read gdp per capita
