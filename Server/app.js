@@ -31,6 +31,23 @@ app.use(passport.session());
 app.use(credentials);
 
 
+
+
+// Define the allowed origins for your OAuth service
+const cors = require('cors');
+const allowedOAuthOrigins = ['https://oauthmicroservice.onrender.com'];
+
+app.use(cors({
+  origin: function (origin, callback) {
+    if (allowedOAuthOrigins.indexOf(origin) !== -1 || !origin) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true, // Enable cookies and other credentials
+}));
+//
 mongoose.connect(process.env.DB_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true

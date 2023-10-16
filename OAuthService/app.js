@@ -29,6 +29,24 @@ app.use(passport.session());
 // Handle the options credentials check - Before any potential CORS & fetch cookies credential requirement 
 app.use(credentials);
 
+// Define the allowed origins for your OAuth service
+const cors = require('cors');
+const allowedOAuthOrigins = ['https://boatsboatsboats-aovb.onrender.com'];
+
+app.use(cors({
+  origin: function (origin, callback) {
+    if (allowedOAuthOrigins.indexOf(origin) !== -1 || !origin) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true, // Enable cookies and other credentials
+}));
+//
+
+
+
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*')
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
