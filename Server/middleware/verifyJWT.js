@@ -4,7 +4,9 @@ const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
 const verifyJWT = (req, res, next) => {
+    console.log(req.headers);
     const authHeader = req.headers.authorization || req.headers.Authorization || req.headers.authorisation || req.headers.Authorisation;
+    console.log(authHeader);
     if (!authHeader?.startsWith('Bearer ')) return res.status(401).json({ message: 'Unauthorized' });
     const token = authHeader.split(' ')[1]; // Split auth header and get the token
     jwt.verify(

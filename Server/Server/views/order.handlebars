@@ -1,0 +1,64 @@
+<style>
+
+.products {
+    max-width: min(95vw, 1000px);
+    margin-top: 100px;
+    text-align: center;
+}
+
+.products .product {
+    display: flex;
+    flex-direction: row;
+    margin: 0px 0px 14px 0px;
+    padding: 2px 30px;
+    text-align: left;
+    border-radius: 15px;
+    transition: background-color ease-in-out;
+    position: relative;
+    background-color: #fafafa;
+}
+
+.purchase {
+    background-color: #fafafa;
+    border-radius: 15px;
+    padding: 35px;
+    align-self: self-start;
+}
+
+</style>
+
+<div class="products mx-auto">
+    <div class="row">
+        <div class="col-md-8">
+            {{#each itemList}}
+            <div class="product">
+                    <h5 class="card-title my-4">x{{quantity}} - {{ this.name }}</h5>
+            </div>
+            {{/each}}
+        </div>
+        {{#if (notEmpty itemList)}}
+            <div class="col-md-4 purchase">
+                <h5 class="text-lg text-bold mb-4">Order</h5>
+                <div class="row my-2">
+                    <span class="w-auto">Subtotal:</span>
+                    <div class="flex-grow-1 w-auto"></div>
+                    <span class="w-auto">${{ total }}</span>
+                </div>
+                <div class="row my-2">
+                    <span class="w-auto">GST:</span>
+                    <div class="flex-grow-1 w-auto"></div>
+                    <span class="w-auto">${{ gst }}</span>
+                </div>
+                <b class="row my-2">
+                    <span class="w-auto text-bold">Total:</span>
+                    <div class="flex-grow-1 w-auto"></div>
+                    <span class="w-auto">${{ total }}</span>
+                </b>
+            </div>
+        {{/if}}
+    </div>
+    {{#if (empty itemList)}}
+    <h6>Invalid Order Id</h6>
+    <a class="btn btn-primary" href="/">Start Shopping</a>
+    {{/if}}
+</div>

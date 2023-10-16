@@ -66,11 +66,11 @@ const handleGoogleLogin = async (req, res) => {
     if (!user || !pwd) return res.status(400).json({ 'message': 'Valid email and password required.' });
 
     // Try to find the username in DB
-    const foundUser = this.collection.findOne({username: {$in:[user]}});
+    const foundUser = await this.collection.findOne({username: {$in:[user]}});
 
     // If we can't find it --> Unauthorized
     if (!foundUser) return res.status(401).json({ 'message': 'Authentication failed. Please provide valid credentials to access this webpage.' });
-
+    console.log(foundUser);
     const roles = Object.values(foundUser.roles);
     // Create JWT Normal & Refresh
     const accessToken = jwt.sign(
@@ -90,8 +90,10 @@ const handleGoogleLogin = async (req, res) => {
     await this.collection.updateOne({ username}, { $set: { refreshToken } });
 
     // Redirect with the access token as a query 
-    res.cookie('jwt', refreshToken, { httpOnly: true, sameSite: 'None', secure: true, maxAge: 24 * 60 * 60 * 1000 });
-    res.redirect(`/?accessToken=${accessToken}`);
+    res.cookie('jwt', refreshToken, { httpOnly: true, secure: true, maxAge: 24 * 60 * 60 * 1000 });
+    //res.redirect(`/?accessToken=${accessToken}`);
+    //res.json({accessToken});
+    res.redirect(`${process.env.HOME_URL}/finish/${accessToken}`);
 
 };
 

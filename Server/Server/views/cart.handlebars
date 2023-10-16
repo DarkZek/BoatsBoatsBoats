@@ -1,0 +1,211 @@
+<style>
+
+.products {
+    max-width: min(95vw, 1000px);
+    margin-top: 100px;
+    text-align: center;
+}
+
+.products .product {
+    display: flex;
+    flex-direction: row;
+    margin: 0px 0px 14px 0px;
+    padding: 10px;
+    text-align: left;
+    border-radius: 15px;
+    transition: background-color ease-in-out;
+    cursor: pointer;
+    position: relative;
+    background-color: #fafafa;
+}
+
+.products .product .img {
+    border-radius: 10px;
+    max-width: 100%;
+    margin-bottom: 10px;
+    height: 140px;
+    width: 200px;
+    margin-right: 20px;
+    overflow: hidden;
+    background-size: cover;
+    background-position: center;
+    background-color: rgb(248, 248, 248);
+    background-repeat: no-repeat;
+}
+
+.quantity {
+    width: 65px;
+    background-color: transparent;
+    border: none;
+}
+
+.purchase {
+    background-color: #fafafa;
+    border-radius: 15px;
+    padding: 35px;
+    align-self: self-start;
+}
+
+.recommendations {
+    display: block;
+    white-space: nowrap;
+    max-width: 100%;
+    overflow-x: auto;
+    padding-bottom: 5px;
+}
+
+.recommend {
+    display: inline-block;
+    cursor: pointer;
+}
+
+.recommend .img {
+    border-radius: 10px;
+    max-width: 100%;
+    margin-bottom: 10px;
+    height: 120px;
+    width: 180px;
+    margin-right: 20px;
+    overflow: hidden;
+    background-size: cover;
+    background-position: center;
+    background-color: rgb(248, 248, 248);
+    background-repeat: no-repeat;
+}
+
+.recommend .details {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+}
+
+</style>
+
+<div class="products mx-auto">
+    <div class="row">
+        <div class="col-md-8">
+            {{#each cartList}}
+            <div class="product">
+                <div class="img" style="background-image: url({{ this.imgUrl }})"></div>
+                <div class="col">
+                    <h5 class="card-title my-4">{{ this.name }}</h5>
+                    <div class="row pe-2">
+                        <select name="quantity" class="quantity" onchange="updateQuantity('{{_id}}', event)"> 
+                            <option value="0">Remove</option>
+                            <option value="1" {{#if (eq amount 1)}}selected{{/if}}>1</option>
+                            <option value="2" {{#if (eq amount 2)}}selected{{/if}}>2</option>
+                            <option value="3" {{#if (eq amount 3)}}selected{{/if}}>3</option>
+                            <option value="4" {{#if (eq amount 4)}}selected{{/if}}>4</option>
+                            <option value="5" {{#if (eq amount 5)}}selected{{/if}}>5</option>
+                            <option value="6" {{#if (gt amount 5)}}selected{{/if}}>6+</option>
+                        </select>
+                        <div class="flex-grow-1 w-auto"></div>
+                        <span class="text-gray w-auto">${{cartPrice this.price amount }}</span>
+                    </div>
+                </div>
+            </div>
+            {{/each}}
+        </div>
+        {{#if (notEmpty cartList)}}
+            <div class="col-md-4 purchase">
+                <h5 class="text-lg text-bold mb-4">Order</h5>
+                <div class="row my-2">
+                    <span class="w-auto">Subtotal:</span>
+                    <div class="flex-grow-1 w-auto"></div>
+                    <span class="w-auto">${{ total }}</span>
+                </div>
+                <div class="row my-2">
+                    <span class="w-auto">GST:</span>
+                    <div class="flex-grow-1 w-auto"></div>
+                    <span class="w-auto">${{ gst }}</span>
+                </div>
+                <b class="row my-2">
+                    <span class="w-auto text-bold">Total:</span>
+                    <div class="flex-grow-1 w-auto"></div>
+                    <span class="w-auto">${{ total }}</span>
+                </b>
+                <button class="btn btn-primary mt-4 w-100" id="confirm-button">Confirm Order</button>
+            </div>
+        {{/if}}
+    </div>
+    <div class="row mt-5" id="recommendations">
+        
+    </div>
+    {{#if (empty cartList)}}
+    <h6>Cart Empty</h6>
+    <a class="btn btn-primary" href="/">Start Shopping</a>
+    {{/if}}
+</div>
+
+{{#if cartList}}
+<script>
+
+let confirmButton = document.getElementById("confirm-button");
+
+async function confirmOrder() {
+
+    confirmButton.setAttribute('disabled', true);
+
+    confirmButton.textContent = 'Loading...';
+
+    let res = await sendRequest('/orders/insert', 'POST', {
+        products: [
+            {{#each cartList}}
+            {
+                name: '{{name}}',
+                id: '{{_id}}',
+                quantity: {{amount}},
+            },
+            {{/each}}
+        ],
+        total: {{total}}
+    });
+
+    if (res.status == 200) {
+        // Success
+        let data = await res.text();
+
+        // Remove quotes
+        data = data.substr(1, data.length - 2);
+
+        CookiesHelper.eraseCookie('cart');
+
+        window.location = '/order/' + data;
+    } else {
+        confirmButton.removeAttribute('disabled');
+        confirmButton.textContent = 'Confirm Order';
+    }
+}
+
+confirmButton.addEventListener('click', confirmOrder);
+
+function updateQuantity(productId, event) {
+    let value = event.target.value;    
+
+    // product id -> quantity mapper
+    let cart = JSON.parse(CookiesHelper.readCookie("cart"))
+
+    cart[productId] = value;
+
+    if (cart[productId] == 0) {
+        delete cart[productId];
+    }
+
+    CookiesHelper.createCookie("cart", JSON.stringify(cart));
+
+    location.reload();
+}
+
+// Load recommendations
+async function loadRecommendations() {
+    let res = await sendRequest('/recommendations', 'GET');
+
+    let test = await res.text();
+
+    window.recommendations.innerHTML = test;
+}
+loadRecommendations();
+
+</script>
+
+{{/if}}

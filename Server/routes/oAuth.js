@@ -9,16 +9,17 @@ const request = require('request');
 // Google OAuth - Entry point to Google Auth redirect
 router.get('/auth/google', (req, res) => {
     // Forward the request to the Google OAuth microservice.
-    request(`${process.env.OAUTH_SERVICE_URL}/auth/google`, (error, response, body) => {
+    res.redirect(`${process.env.OAUTH_SERVICE_URL}/auth/google`);
+    /**request(`${process.env.OAUTH_SERVICE_URL}/auth/google`, (error, response, body) => {
       if (error) {
         // Handle error
         res.status(500).send('Internal Server Error');
       } else {
         res.send(body);
       }
-    });
+    });*/
   });
-
+/**
 // Handle the SUCCESS redirect route  
 router.get('/auth/google/success', (req, res) => {
     request(`${process.env.OAUTH_SERVICE_URL}/auth/google/success`, (error, response, body) => {
@@ -55,6 +56,6 @@ router.get('/auth/google/failure', (req, res) => {
         }
     });
 });
-
+ */
 
 module.exports = router;

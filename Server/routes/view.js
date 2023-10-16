@@ -84,7 +84,7 @@ router.get('/privacy', retrieveUserInfo, async function(req, res) {
     res.render("privacy", { user: res.locals.userData });
 });
 
-router.get('/cart', verifyJWT, verifyRoles(ROLES_LIST.Admin, ROLES_LIST.User), retrieveUserInfo, async function(req, res) {
+router.get('/cart',verifyJWT, retrieveUserInfo, async function(req, res) {
     let cart = {};
     let cartSize = undefined;
 

@@ -1,5 +1,6 @@
 var express = require('express');
 var router = express.Router();
+const axios = require('axios');
 
 // Middleware 
 
@@ -97,6 +98,25 @@ router.post('/sendResetPassword', sendResetPasswordController.sendResetPassword)
 router.post('/resetPassword', retrieveUserInfo,sendResetPasswordController.setResetPassword);
 router.put('/admin',verifyJWT, verifyRoles(ROLES_LIST.Admin), adminController.makeAdmin);
 
+router.get('/finish/:accessToken', async function(req, res) {
+  const accessToken = req.params.accessToken;
+  try {
+    // Call the /refresh route on your own server
+    await axios.get('http://localhost:3000/cart', {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+
+    // Redirect to the / route after calling /refresh
+    res.redirect('/');
+  } catch (error) {
+    // Handle any errors that occur during the request
+    console.error('Error calling /refresh:', error);
+    res.status(500).send('Error calling /refresh');
+  }
+
+});
 
 
 /**********************************************
