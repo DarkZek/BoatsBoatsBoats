@@ -102,7 +102,7 @@ router.get('/finish/:accessToken', async function(req, res) {
   const accessToken = req.params.accessToken;
   try {
     // Call the /refresh route on your own server
-    await axios.get('http://localhost:3000/cart', {
+    await axios.get(`${process.env.HOSTED_URL}/cart`, {
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },
