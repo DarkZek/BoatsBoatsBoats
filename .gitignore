@@ -1,5 +1,5 @@
 Server/node_modules/
 RecommendationService/node_modules/
-OAuth/node_modules
-node_modules
+OAuth/node_modules/
+node_modules/
 .env
